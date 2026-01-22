@@ -1,0 +1,33 @@
+{% for p in page_obj %}
+<tr>
+    <td>{{ p.ari8mosEisagoghs }}</td>
+            <td>{{ p.hmeromhnia_eis|default:"-" }}</td>
+            <td>{{ p.syggrafeas|default:"-" }}</td>
+            <td>{{ p.koha|default:"-"}}</td>
+            <td>{{ p.titlos|default:"-"  }}</td>
+            <td>{{ p.ekdoths|default:"-" }}</td>
+            <td>{{ p.ekdosh|default:"-" }}</td>
+            <td>{{ p.etosEkdoshs|default:"-" }}</td>
+            <td>{{ p.toposEkdoshs|default:"-" }}</td>
+            <td>{{ p.sxhma|default:"-" }}</td>
+            <td>{{ p.selides|default:"-" }}</td>
+            <td>{{ p.tomos|default:"-" }}</td>
+            <td>{{ p.troposPromPar|default:"-" }}</td>
+            <td>{{ p.ISBN|default:"-" }}</td>
+    <td class="actions">
+        {% if p.ari8mosEisagoghs %}
+            <a href="{% url 'edit_person' p.ari8mosEisagoghs %}" class="btn btn-edit">✏️ Edit</a>
+            {% if request.user.is_superuser %}
+            <button onclick="confirmDelete({{ p.ari8mosEisagoghs }}, '{{ p.titlos|default:"this record"|escapejs }}')" 
+                    class="btn btn-delete">🗑️ Delete</button>
+            {% endif %}        
+        {% else %}
+            <span style="color: #999;">No ID</span>
+        {% endif %}
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="15" style="text-align: center;">No records found</td>
+</tr>
+{% endfor %}
