@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Εγγραφή Προσωπικού{% endblock %}
+
+{% block content %}
+
+<div class="container" style="
+    font-family: Arial, sans-serif;
+    background-color:#f5f0e6;   /* μπεζ */
+    border: 2px solid #d6c9b8;
+    border-radius:8px;
+    padding:25px;
+    width:350px;
+    margin:50px auto;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+">
+
+    <h2 style="text-align:center; margin-bottom:20px;">
+        Εγγραφή Προσωπικού Βιβλιοθήκης
+    </h2>
+
+    <form method="post" id="signupForm" style="display:flex; flex-direction:column;">
+        {% csrf_token %}
+
+        <!-- Username -->
+        <label for="id_username">Όνομα χρήστη:</label>
+        {{ form.username }}
+        <p id="usernameError" style="display:none; color:red; font-size:0.9em;"></p>
+
+        <!-- Email -->
+        <label for="id_email">Email:</label>
+        {{ form.email }}
+        <p id="emailError" style="display:none; color:red; font-size:0.9em;"></p>
+
+        <!-- Password -->
+        <label for="id_password1">Κωδικός πρόσβασης:</label>
+        {{ form.password1 }}
+        <p id="passwordError" style="display:none; color:red; font-size:0.9em;"></p>
+
+        <!-- Confirm Password -->
+        <label for="id_password2">Επιβεβαίωση κωδικού πρόσβασης:</label>
+        {{ form.password2 }}
+        <p id="confirmError" style="display:none; color:red; font-size:0.9em;"></p>
+
+        <button type="submit" style="
+            padding:10px;
+            background-color:#c9b18f;  /* πιο έντονο χρώμα */
+            border:2px solid #a89377;  /* αντίστοιχο περίγραμμα */
+            border-radius:8px;
+            color:white;               /* καλύτερη αντίθεση */
+            font-weight:700;
+            cursor:pointer;
+            margin-top:15px;
+            transition: transform 0.2s ease, background 0.2s ease;
+        ">
+            Εγγραφή
+        </button>
+    </form>
+
+    <p style="margin-top:20px;font-size:0.8em;">
+        ❓ Αν αντιμετωπίσετε οποιοδήποτε πρόβλημα κατά την εγγραφή, επικοινωνήστε με τον διαχειριστή.
+    </p>
+</div>
+
+<script>
+    const usernameInput = document.getElementById('id_username');
+    const emailInput = document.getElementById('id_email');
+    const passwordInput = document.getElementById('id_password1');
+    const confirmInput = document.getElementById('id_password2');
+
+    const usernameError = document.getElementById('usernameError');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmError = document.getElementById('confirmError');
+
+    const form = document.getElementById('signupForm');
+
+    form.addEventListener('submit', function(event) {
+        let valid = true;
+
+        // Έλεγχος ονόματος χρήστη
+        const usernameRegex = /^[A-Za-z0-9@.+-_]+$/;
+        if (!usernameRegex.test(usernameInput.value)) {
+            usernameError.textContent =
+                '❌ Μη έγκυρο όνομα χρήστη. Χρησιμοποιήστε λατινικά γράμματα, αριθμούς ή τα σύμβολα @ . + - _';
+            usernameError.style.display = 'block';
+            valid = false;
+        } else {
+            usernameError.style.display = 'none';
+        }
+
+        // Έλεγχος email
+        if (!emailInput.value.includes('@')) {
+            emailError.textContent =
+                '❌ Παρακαλώ εισάγετε έγκυρη διεύθυνση ηλεκτρονικού ταχυδρομείου.';
+            emailError.style.display = 'block';
+            valid = false;
+        } else {
+            emailError.style.display = 'none';
+        }
+
+        // Έλεγχος κωδικού πρόσβασης
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[,-.@$!%*?&]).{8,}$/;
+
+        if (!passwordRegex.test(passwordInput.value)) {
+            passwordError.textContent =
+                '❌ Ο κωδικός πρέπει να έχει τουλάχιστον 8 χαρακτήρες, ένα κεφαλαίο γράμμα, ένα μικρό, έναν αριθμό και ένα ειδικό σύμβολο.';
+            passwordError.style.display = 'block';
+            valid = false;
+        } else {
+            passwordError.style.display = 'none';
+        }
+
+        // Έλεγχος επιβεβαίωσης κωδικού
+        if (passwordInput.value !== confirmInput.value) {
+            confirmError.textContent =
+                '❌ Οι κωδικοί πρόσβασης δεν ταιριάζουν.';
+            confirmError.style.display = 'block';
+            valid = false;
+        } else {
+            confirmError.style.display = 'none';
+        }
+
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
+</script>
+
+{% endblock %}

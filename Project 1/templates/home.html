@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Αρχική{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <p>Γειά σου, {{ user.username }}!</p>
+    <form action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <button type="submit">Αποσύνδεση</button>
+    </form>
+  {% else %}
+    <p>Δεν είστε συνδεδεμένος/η.</p>
+    <a href="{% url 'login' %}">Σύνδεση</a> |
+    <a href="{% url 'signup' %}">Εγγραφή</a>
+  {% endif %}
+{% endblock %}

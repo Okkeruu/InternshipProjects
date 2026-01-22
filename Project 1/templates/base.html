@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}My App{% endblock %}</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #ffffff;
+        }
+
+        .page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+
+            /* Background εικόνα με overlay */
+            background-image: linear-gradient(
+                rgba(255,255,255,0.75),
+                rgba(255,255,255,0.75)
+            ), url("{% static 'images/books_background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column; /* δύο σειρές */
+            align-items: center;
+            gap: 12px; /* απόσταση μεταξύ σειρών */
+            padding: 18px 28px;
+        }
+
+        .nav-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px; /* απόσταση μεταξύ κουμπιών κάθε σειράς */
+        }
+
+        /* 🔹 Links με μπεζ πλαίσιο */
+        nav a {
+            text-decoration: none;
+            color: #1f2937;
+            font-weight: 700;
+            font-size: 1.15rem;
+            padding: 8px 14px;
+            border: 2px solid #d6c9b8;
+            border-radius: 8px;
+            background-color: #f5f0e6;
+            transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease;
+        }
+
+        nav a:hover {
+            transform: translateY(-2px);
+            background-color: #e0d4bf;
+            color: #4f46e5;
+        }
+
+        nav form button {
+            background: #f5f0e6;
+            color: #c0392b;
+            border: 2px solid #d6c9b8;
+            padding: 10px 18px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.15rem;
+            border-radius: 8px;
+            transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        nav form button:hover {
+            transform: translateY(-2px);
+            background: #e0d4bf;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.5);
+            color: #c0392b;
+        }
+
+        hr {
+            width: 65%;
+            margin: 30px auto;
+            border: none;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(to right, #4f46e5, #22c55e);
+        }
+
+        .content-box {
+            padding: 35px;
+            max-width: 900px;
+            width: 100%;
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: #1f2937;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            nav { padding: 14px; }
+            nav a, nav form button { font-size: 1rem; padding: 6px 10px; }
+            .content-box { padding: 22px; font-size: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+    <nav>
+        <!-- Πρώτη σειρά -->
+        <div class="nav-row">
+            <a href="/">🏠 Αρχική</a>
+            <a href="/upload/">📊 Εισαγωγή αρχείου Excel</a>
+            <a href="/add-person/">📚 Νέα εγγραφή βιβλίου</a>
+        </div>
+
+        <!-- Δεύτερη σειρά -->
+        <div class="nav-row">
+            <a href="/people/">📖 Όλες οι εγγραφές</a>
+
+            {% if user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">🚪 Αποσύνδεση</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">🔐 Σύνδεση</a>
+                <a href="{% url 'signup' %}">📝 Εγγραφή</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <hr>
+
+    <div class="content-box">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</div>
+
+</body>
+</html>
