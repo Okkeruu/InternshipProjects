@@ -125,15 +125,46 @@ def show_people(request):
 
     # 🔍 Search
     search = request.GET.get('search', '').strip()
+    search_category = request.GET.get('search_category', 'all')  # New parameter
+    
     if search:
-        q = Q(titlos__icontains=search) | Q(syggrafeas__icontains=search)
-        
-        if search.isdigit():
-            q |= Q(ari8mosEisagoghs=int(search))
+        if search_category == 'all':
+            # Search all fields (original behavior)
+            q = Q(titlos__icontains=search) | Q(syggrafeas__icontains=search)
             
-        qs = qs.filter(q)
-
-
+            if search.isdigit():
+                q |= Q(ari8mosEisagoghs=int(search))
+                
+            qs = qs.filter(q)
+            
+        elif search_category == 'ari8mos':
+            # Search only by number
+            if search.isdigit():
+                qs = qs.filter(ari8mosEisagoghs=int(search))
+            else:
+                # If non-numeric input for number search, show no results
+                qs = qs.none()
+                
+        elif search_category == 'hmeromhnia_eis':
+            # Search only by hmeromhnia_eis
+            qs = qs.filter(hmeromhnia_eis__icontains=search)
+            
+        elif search_category == 'titlos':
+            # Search only by title
+            qs = qs.filter(titlos__icontains=search)
+            
+        elif search_category == 'syggrafeas':
+            # Search only by author
+            qs = qs.filter(syggrafeas__icontains=search)
+            
+        elif search_category == 'ekdoths':
+            # Search only by publisher
+            qs = qs.filter(ekdoths__icontains=search)
+            
+        elif search_category == 'ISBN':
+            # Search only by ISBN
+            qs = qs.filter(ISBN__icontains=search)
+            
         
     # 📊 Range filter
     from_num = request.GET.get('from_num')
@@ -170,6 +201,7 @@ def show_people(request):
     return render(request, "main/people.html", {
         "page_obj": page_obj,
         "search": search,
+        "search_category": search_category,
         
         
     })
@@ -813,4 +845,5 @@ def print_range_data(request):
         'records': data,
         'has_more': len(records) == limit
     })
+
 
